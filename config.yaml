@@ -21,7 +21,6 @@ features:
   - Bwd IAT Mean
   - SYN Flag Count
   - RST Flag Count
-  - PSH Flag Count
   - ACK Flag Count
   - Avg Packet Size
   - Avg Fwd Segment Size
