@@ -23,7 +23,6 @@ features:
   - RST Flag Count
   - ACK Flag Count
   - Avg Packet Size
-  - Avg Fwd Segment Size
 
 lstm:
   hidden_size: 128
