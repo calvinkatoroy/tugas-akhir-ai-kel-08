@@ -115,12 +115,19 @@ def make_sequences(X, y, seq_len):
     return X_seq.astype(np.float32), y_seq.astype(np.int64)
 
 
-def run_preprocessing(config_path='config.yaml'):
+def run_preprocessing(config_path='config.yaml', kaggle_dir=None, splits_dir=None):
+    """
+    kaggle_dir: override for parquet source dir (e.g. Google Drive path on Colab)
+    splits_dir: override for output splits dir (e.g. Google Drive path on Colab)
+    """
     cfg = load_config(config_path)
     features = cfg['features']
     seed = cfg['seed']
-    kaggle_dir = cfg['data']['kaggle_path']
-    splits_dir = Path(cfg['data']['splits_path'])
+    if kaggle_dir is None:
+        kaggle_dir = cfg['data']['kaggle_path']
+    if splits_dir is None:
+        splits_dir = Path(cfg['data']['splits_path'])
+    splits_dir = Path(splits_dir)
     splits_dir.mkdir(parents=True, exist_ok=True)
 
     print('Loading parquets...')
