@@ -1,0 +1,54 @@
+seed: 42
+
+data:
+  kaggle_path: data/processed/kaggle/archive
+  splits_path: data/processed/splits
+  train_ratio: 0.70
+  val_ratio: 0.15
+  test_ratio: 0.15
+
+features:
+  - Flow Duration
+  - Total Fwd Packets
+  - Total Backward Packets
+  - Fwd Packets Length Total
+  - Bwd Packets Length Total
+  - Fwd Packet Length Mean
+  - Bwd Packet Length Mean
+  - Flow Bytes/s
+  - Flow Packets/s
+  - Fwd IAT Mean
+  - Bwd IAT Mean
+  - SYN Flag Count
+  - RST Flag Count
+  - PSH Flag Count
+  - ACK Flag Count
+  - Avg Packet Size
+  - Avg Fwd Segment Size
+
+lstm:
+  hidden_size: 128
+  num_layers: 2
+  dropout: 0.3
+  bidirectional: false
+  seq_len: 10
+  batch_size: 64
+  learning_rate: 0.001
+  epochs: 50
+
+gru:
+  hidden_size: 128
+  num_layers: 2
+  dropout: 0.3
+  bidirectional: false
+  seq_len: 10
+  batch_size: 64
+  learning_rate: 0.001
+  epochs: 50
+
+random_forest:
+  n_estimators: 100
+  max_depth: null
+  min_samples_split: 2
+  class_weight: balanced
+  n_jobs: -1

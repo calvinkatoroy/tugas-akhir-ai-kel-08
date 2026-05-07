@@ -1,0 +1,30 @@
+# Data — raw and processed files are too large for git
+data/raw/
+data/processed/kaggle/
+data/processed/github/
+data/processed/splits/
+
+# Model checkpoints
+results/checkpoints/
+
+# Saved probability arrays
+results/*.npy
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+*.~lock.*
