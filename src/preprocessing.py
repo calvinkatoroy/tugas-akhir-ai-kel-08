@@ -53,6 +53,12 @@ def load_kaggle_parquets(kaggle_dir):
         df = pd.read_parquet(p)
         frames.append(df)
         print(f'  Loaded {p.name}: {len(df):,} rows')
+    if not frames:
+        raise FileNotFoundError(
+            f'No .parquet files found in {kaggle_dir!r}. '
+            f'Directory exists: {kaggle_dir.exists()}. '
+            f'Contents: {list(kaggle_dir.iterdir()) if kaggle_dir.exists() else "N/A"}'
+        )
     combined = pd.concat(frames, ignore_index=True)
     print(f'  Combined: {len(combined):,} rows')
     return combined

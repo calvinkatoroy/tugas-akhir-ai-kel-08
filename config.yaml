@@ -1,7 +1,7 @@
 seed: 42
 
 data:
-  kaggle_path: data/processed/kaggle/archive
+  kaggle_path: data/processed/kaggle
   splits_path: data/processed/splits
   train_ratio: 0.70
   val_ratio: 0.15
@@ -21,8 +21,10 @@ features:
   - Bwd IAT Mean
   - SYN Flag Count
   - RST Flag Count
+  - PSH Flag Count
   - ACK Flag Count
   - Avg Packet Size
+  - Avg Fwd Segment Size
 
 lstm:
   hidden_size: 128
