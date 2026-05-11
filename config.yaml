@@ -51,3 +51,23 @@ random_forest:
   min_samples_split: 2
   class_weight: balanced
   n_jobs: -1
+
+cnn:
+  num_filters: 64
+  kernel_size: 3
+  dropout: 0.3
+  seq_len: 10
+  batch_size: 64
+  learning_rate: 0.001
+  epochs: 50
+
+transformer:
+  d_model: 64
+  nhead: 4
+  num_layers: 2
+  dim_feedforward: 128
+  dropout: 0.1
+  seq_len: 10
+  batch_size: 64
+  learning_rate: 0.001
+  epochs: 50
