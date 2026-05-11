@@ -20,15 +20,19 @@ def set_seed(seed=42):
 
 
 def log_experiment(record: dict, csv_path='results/metrics_summary.csv'):
-    """Append one experiment record (dict) to the metrics CSV."""
+    """Append one experiment record (dict) to the metrics CSV.
+    If file exists, aligns to existing columns (fills missing with empty string).
+    """
+    import pandas as pd
     path = Path(csv_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    write_header = not path.exists()
-    with open(path, 'a', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=record.keys())
-        if write_header:
-            writer.writeheader()
-        writer.writerow(record)
+    row_df = pd.DataFrame([record])
+    if path.exists():
+        existing = pd.read_csv(path)
+        combined = pd.concat([existing, row_df], ignore_index=True)
+    else:
+        combined = row_df
+    combined.to_csv(path, index=False)
 
 
 def plot_confusion_matrix(cm, class_names, title, save_path=None):
