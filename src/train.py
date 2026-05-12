@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn as nn
+from torch.cuda.amp import autocast, GradScaler
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.metrics import f1_score
 try:
@@ -21,21 +22,30 @@ def make_dataloaders(X_train, y_train, X_val, y_val, batch_size):
         torch.tensor(X_val, dtype=torch.float32),
         torch.tensor(y_val, dtype=torch.long),
     )
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False)
+    pin = torch.cuda.is_available()
+    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True,
+                              num_workers=0, pin_memory=pin)
+    val_loader   = DataLoader(val_ds,   batch_size=batch_size, shuffle=False,
+                              num_workers=0, pin_memory=pin)
     return train_loader, val_loader
 
 
-def train_one_epoch(model, loader, optimizer, criterion, device):
+def train_one_epoch(model, loader, optimizer, criterion, device, scaler):
     model.train()
     total_loss, correct, n = 0.0, 0, 0
     for X_batch, y_batch in loader:
-        X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+        X_batch, y_batch = X_batch.to(device, non_blocking=True), y_batch.to(device, non_blocking=True)
         optimizer.zero_grad()
-        logits = model(X_batch)
-        loss = criterion(logits, y_batch)
-        loss.backward()
-        optimizer.step()
+        with autocast(enabled=scaler is not None):
+            logits = model(X_batch)
+            loss = criterion(logits, y_batch)
+        if scaler is not None:
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            loss.backward()
+            optimizer.step()
         total_loss += loss.item() * len(y_batch)
         correct += (logits.argmax(1) == y_batch).sum().item()
         n += len(y_batch)
@@ -77,6 +87,7 @@ def train_model(model, X_train, y_train, X_val, y_val, cfg, model_key,
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
+    scaler = GradScaler() if device.type == 'cuda' else None
 
     # class weights to handle imbalance
     n_neg = int((y_train == 0).sum())
@@ -99,7 +110,7 @@ def train_model(model, X_train, y_train, X_val, y_val, cfg, model_key,
 
     for epoch in tqdm(range(1, epochs + 1), desc=f'Training {model_key.upper()}'):
         t0 = time.time()
-        tr_loss, tr_acc = train_one_epoch(model, train_loader, optimizer, criterion, device)
+        tr_loss, tr_acc = train_one_epoch(model, train_loader, optimizer, criterion, device, scaler)
         val_loss, val_acc, val_f1 = evaluate_epoch(model, val_loader, criterion, device)
         scheduler.step(val_f1)
 
