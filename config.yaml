@@ -33,7 +33,7 @@ lstm:
   dropout: 0.3
   bidirectional: false
   seq_len: 10
-  batch_size: 64
+  batch_size: 32
   learning_rate: 0.001
   epochs: 50
 
@@ -43,7 +43,7 @@ gru:
   dropout: 0.3
   bidirectional: false
   seq_len: 10
-  batch_size: 64
+  batch_size: 32
   learning_rate: 0.001
   epochs: 50
 
@@ -59,7 +59,7 @@ cnn:
   kernel_size: 3
   dropout: 0.3
   seq_len: 10
-  batch_size: 64
+  batch_size: 32
   learning_rate: 0.001
   epochs: 50
 
@@ -70,6 +70,6 @@ transformer:
   dim_feedforward: 128
   dropout: 0.1
   seq_len: 10
-  batch_size: 64
+  batch_size: 32
   learning_rate: 0.001
   epochs: 50
