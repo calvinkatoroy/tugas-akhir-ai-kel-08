@@ -3,8 +3,8 @@ seed: 42
 data:
   kaggle_path: data/processed/kaggle
   splits_path: data/processed/splits
-  drive_root: "E:/My Drive/tugas-akhir-ai"
-  splits_drive: "E:/My Drive/tugas-akhir-ai/splits"
+  drive_root: "G:/My Drive/tugas-akhir-ai"
+  splits_drive: "G:/My Drive/tugas-akhir-ai/splits"
   train_ratio: 0.70
   val_ratio: 0.15
   test_ratio: 0.15
